@@ -1,0 +1,6 @@
+<resources>
+    <style name="Theme.SmartFind" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#12151C</item>
+        <item name="android:windowBackground">#12151C</item>
+    </style>
+</resources>

@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --sf-bg: #12151c;
+  --sf-surface: #1b212c;
+  --sf-surface-hover: #232a37;
+  --sf-border: #2a3140;
+  --sf-text: #e7eaf0;
+  --sf-text-muted: #8993a8;
+  --sf-signal: #4cdbc4;
+  --sf-signal-dim: #2a5a52;
+  --sf-offline: #5b6478;
+  --sf-danger: #f0665a;
+  --sf-danger-dim: #4a2a28;
+}
+
+@theme inline {
+  --color-bg: var(--sf-bg);
+  --color-surface: var(--sf-surface);
+  --color-surface-hover: var(--sf-surface-hover);
+  --color-border: var(--sf-border);
+  --color-text: var(--sf-text);
+  --color-text-muted: var(--sf-text-muted);
+  --color-signal: var(--sf-signal);
+  --color-signal-dim: var(--sf-signal-dim);
+  --color-offline: var(--sf-offline);
+  --color-danger: var(--sf-danger);
+  --color-danger-dim: var(--sf-danger-dim);
+  --font-display: "Avenir Next", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+body {
+  background: var(--sf-bg);
+  color: var(--sf-text);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+/* --- Signature element ---------------------------------------------------
+   A radar sweep. Idle, it's a slow ambient rotation behind the header,
+   implying "this network is always listening for your devices."
+   On a RING command, the same sweep speeds up and appears as an expanding
+   ring on the target device's card border, so the one visual language means
+   two things: passive presence, and active signal. */
+
+@keyframes sf-sweep-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sf-ping-ring {
+  0% { box-shadow: 0 0 0 0 rgba(76, 219, 196, 0.55); }
+  70% { box-shadow: 0 0 0 14px rgba(76, 219, 196, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(76, 219, 196, 0); }
+}
+
+@keyframes sf-ping-scale {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+.sf-radar-sweep {
+  animation: sf-sweep-rotate 8s linear infinite;
+}
+
+.sf-ringing {
+  animation: sf-ping-ring 1.4s ease-out infinite;
+  border-color: var(--sf-signal) !important;
+}
+
+.sf-ringing .sf-ring-dot {
+  animation: sf-ping-scale 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-radar-sweep,
+  .sf-ringing,
+  .sf-ringing .sf-ring-dot {
+    animation: none !important;
+  }
+}

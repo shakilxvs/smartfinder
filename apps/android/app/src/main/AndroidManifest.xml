@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <!-- Multicast lock is required on many devices for NSD/mDNS discovery to
+         actually receive replies; without it some OEM Wi-Fi stacks drop
+         multicast packets while the screen is off. -->
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <!-- Android 14+ requires a declared foreground service type. We use
+         dataSync because the service's job is "maintain a live connection
+         to the local server," not a specific system-recognized category
+         like camera or location. -->
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <!-- Full-screen intent is what lets a RING command wake and interrupt a
+         locked device's screen, similar to an incoming call or alarm. Play
+         Store review requires this be used for genuinely time-critical
+         alerts; "help me find my misplaced phone" qualifies, but document
+         this honestly in docs/android.md since Google can and does audit
+         this permission's usage. -->
+
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- Requested via a user-facing prompt, never silently. See MainActivity. -->
+
+    <application
+        android:name=".SmartFindApp"
+        android:allowBackup="false"
+        android:label="SmartFind"
+        android:icon="@mipmap/ic_launcher"
+        android:theme="@style/Theme.SmartFind">
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.RingActivity"
+            android:exported="false"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance" />
+        <!-- showWhenLocked + turnScreenOn are the two flags that make "ring
+             while the phone is locked" actually work on Android, launched
+             via a full-screen-intent notification from the service. -->
+
+        <activity
+            android:name=".ui.MessageActivity"
+            android:exported="false"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance" />
+
+        <service
+            android:name=".service.SmartFindConnectionService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <receiver
+            android:name=".service.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <!-- Restarts the connection service after a reboot, since Android
+             does not otherwise resurrect foreground services automatically. -->
+
+    </application>
+</manifest>

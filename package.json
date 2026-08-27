@@ -1,0 +1,22 @@
+{
+  "name": "smartfind",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/server",
+    "apps/dashboard",
+    "packages/protocol",
+    "packages/types",
+    "packages/shared"
+  ],
+  "scripts": {
+    "build": "npm run build -w packages/types -w packages/protocol -w packages/shared -w apps/server -w apps/dashboard",
+    "lint": "npm run lint -w apps/server -w apps/dashboard",
+    "test": "npm run test -w apps/server",
+    "dev:server": "npm run dev -w apps/server",
+    "dev:dashboard": "npm run dev -w apps/dashboard"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
